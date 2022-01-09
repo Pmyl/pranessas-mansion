@@ -32,10 +32,12 @@ func _connected_ok():
 
 func _server_disconnected():
 	print("client: server kicked us")
+	# warning-ignore:return_value_discarded
 	get_tree().change_scene("res://Main.tscn")
 
 func _connected_fail():
 	print("client: failed to connect")
+	# warning-ignore:return_value_discarded
 	get_tree().change_scene("res://Main.tscn")
 
 remote func register_player(info):
@@ -75,7 +77,7 @@ func create_player(id, name, is_ghost):
 	if is_ghost:
 		player = preload("res://Ghost.tscn").instance()
 	else:
-		player = preload("res://Player.tscn").instance()
+		player = preload("res://Seeker.tscn").instance()
 	player.set_name(str(id))
 	player.set_network_master(id) # Will be explained later
 	player.set_player_name(name)

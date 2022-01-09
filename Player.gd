@@ -1,23 +1,38 @@
 extends KinematicBody2D
 
 var MOTION_SPEED = 90.0
+var forced_motion = false
+var stop_motion = false
+var motion = Vector2()
+var last_direction = Vector2.DOWN
 
 puppet var puppet_pos = Vector2()
 puppet var puppet_motion = Vector2()
 
 
 func _physics_process(_delta):
-	var motion = Vector2()
-
 	if is_network_master():
-		if Input.is_action_pressed("left"):
-			motion += Vector2(-1, 0)
-		if Input.is_action_pressed("right"):
-			motion += Vector2(1, 0)
-		if Input.is_action_pressed("up"):
-			motion += Vector2(0, -1)
-		if Input.is_action_pressed("down"):
-			motion += Vector2(0, 1)
+		if stop_motion:
+			motion = Vector2()
+		else:
+			if forced_motion:
+				motion = last_direction
+			else:
+				motion = Vector2()
+
+			var newMotion = Vector2()
+			if Input.is_action_pressed("left"):
+				newMotion += Vector2(-1, 0)
+			if Input.is_action_pressed("right"):
+				newMotion += Vector2(1, 0)
+			if Input.is_action_pressed("up"):
+				newMotion += Vector2(0, -1)
+			if Input.is_action_pressed("down"):
+				newMotion += Vector2(0, 1)
+
+			if newMotion.length() != 0:
+				motion = newMotion
+				last_direction = motion
 
 		rset("puppet_motion", motion)
 		rset("puppet_pos", position)
