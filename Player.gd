@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-const MOTION_SPEED = 90.0
+var MOTION_SPEED = 90.0
 
 puppet var puppet_pos = Vector2()
 puppet var puppet_motion = Vector2()

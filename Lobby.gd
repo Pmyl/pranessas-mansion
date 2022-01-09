@@ -58,24 +58,28 @@ remotesync func pre_configure_game():
 
 	print("adding my player")
 	# Load my player
-	var my_player = preload("res://Player.tscn").instance()
-	my_player.set_name(str(selfPeerID))
-	my_player.set_network_master(selfPeerID) # Will be explained later
-	my_player.set_player_name(global.player_name)
-	get_node("/root/Game/Players").add_child(my_player)
+	
+	create_player(selfPeerID, global.player_name, selfPeerID == 1)
 
 	print("adding other players - count ", player_info.size())
 	# Load other players
 	for p in player_info:
-		var player = preload("res://Player.tscn").instance()
-		player.set_name(str(p))
-		player.set_network_master(p) # Will be explained later
-		player.set_player_name(player_info[p].name)
-		get_node("/root/Game/Players").add_child(player)
+		create_player(p, player_info[p].name, p == 1)
 
 	# Tell server (remember, server is always ID=1) that this peer is done pre-configuring.
 	# The server can call get_tree().get_rpc_sender_id() to find out who said they were done.
 	rpc_id(1, "done_preconfiguring")
+
+func create_player(id, name, is_ghost):
+	var player
+	if is_ghost:
+		player = preload("res://Ghost.tscn").instance()
+	else:
+		player = preload("res://Player.tscn").instance()
+	player.set_name(str(id))
+	player.set_network_master(id) # Will be explained later
+	player.set_player_name(name)
+	get_node("/root/Game/Players").add_child(player)
 
 var players_done = []
 remotesync func done_preconfiguring():
