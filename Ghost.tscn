@@ -32,6 +32,7 @@ frames = SubResource( 2 )
 shape = SubResource( 3 )
 
 [node name="Label" type="Label" parent="."]
+visible = false
 margin_left = -97.0
 margin_top = -31.0
 margin_right = 97.0
