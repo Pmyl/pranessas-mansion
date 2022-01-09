@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Game.gd" type="Script" id=1]
+
+[node name="Game" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="Players" type="Node" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2( 236, 202 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+position = Vector2( 186, 59 )
+scale = Vector2( 3.09889, 1 )
+polygon = PoolVector2Array( 145.213, 92, 145.859, -222, 171.352, -218, 169.415, 146, -114.557, 147, -114.557, -240, 151.344, -230, 138.759, -186, -96.8088, -203, -100.358, 126 )
