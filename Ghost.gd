@@ -50,6 +50,8 @@ func _physics_process(_delta):
 		GhostState.HitStun:
 			forced_motion = false
 			stop_motion = true
+			$AnimatedSprite.visible = true
+			$AnimatedSprite.modulate.a = 1
 
 remotesync func start_running():
 	print("Ghost: RUUUUUUN")
