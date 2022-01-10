@@ -1,14 +1,25 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Ghost.gd" type="Script" id=2]
+[ext_resource path="res://Sounds/mixkit-game-ball-tap-2073.wav" type="AudioStream" id=3]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 8.0
 height = 10.0
 
-[node name="Ghost" instance=ExtResource( 1 )]
+[sub_resource type="CapsuleShape2D" id=2]
+height = 12.0
+
+[sub_resource type="CircleShape2D" id=3]
+
+[node name="Ghost" groups=["ghosts"] instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+speed = 60
+run_speed = 80
+
+[node name="CollisionShape2D" parent="." index="0"]
+visible = false
 
 [node name="AnimatedSprite" parent="." index="1"]
 position = Vector2( 0, -2 )
@@ -18,21 +29,56 @@ frame = 4
 [node name="Label" parent="." index="2"]
 visible = false
 
-[node name="Hitbox" type="Area2D" parent="." index="3"]
-collision_layer = 64
-collision_mask = 48
+[node name="HitRunTimer" type="Timer" parent="." index="3"]
+one_shot = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" index="0"]
+[node name="HitStunTimer" type="Timer" parent="." index="4"]
+one_shot = true
+
+[node name="HitTimer" type="Timer" parent="." index="5"]
+
+[node name="Health" type="Label" parent="." index="6"]
+margin_left = -20.0
+margin_top = -34.0
+margin_right = 20.0
+margin_bottom = -20.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hurtbox" type="Area2D" parent="." index="7"]
+collision_layer = 256
+collision_mask = 80
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" index="0"]
+visible = false
 position = Vector2( 0, -1 )
 shape = SubResource( 1 )
 
-[node name="HitRunTimer" type="Timer" parent="." index="4"]
-one_shot = true
+[node name="Hitbox" type="Area2D" parent="." index="8"]
+collision_layer = 32
+collision_mask = 0
 
-[node name="HitStunTimer" type="Timer" parent="." index="5"]
-one_shot = true
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" index="0"]
+visible = false
+position = Vector2( 0, -1 )
+shape = SubResource( 2 )
 
-[connection signal="area_entered" from="Hitbox" to="." method="_on_Hitbox_area_entered"]
-[connection signal="area_exited" from="Hitbox" to="." method="_on_Hitbox_area_exited"]
+[node name="SoundHealthDown" type="AudioStreamPlayer" parent="." index="9"]
+stream = ExtResource( 3 )
+volume_db = -10.065
+pitch_scale = 1.53
+
+[node name="ScaryAura" type="Area2D" parent="." index="10"]
+collision_layer = 512
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ScaryAura" index="0"]
+visible = false
+shape = SubResource( 3 )
+
 [connection signal="timeout" from="HitRunTimer" to="." method="_on_HitRunTimer_timeout"]
 [connection signal="timeout" from="HitStunTimer" to="." method="_on_HitStunTimer_timeout"]
+[connection signal="timeout" from="HitTimer" to="." method="_on_HitTimer_timeout"]
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_Hurtbox_area_entered"]
+[connection signal="area_exited" from="Hurtbox" to="." method="_on_Hurtbox_area_exited"]

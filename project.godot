@@ -28,6 +28,11 @@ config/icon="res://icon.png"
 
 global="*res://global.gd"
 
+[display]
+
+window/stretch/mode="2d"
+window/stretch/aspect="keep"
+
 [gdnative]
 
 singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
@@ -58,6 +63,11 @@ down={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":83,"unicode":0,"echo":false,"script":null)
  ]
 }
+click={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
 
 [layer_names]
 
@@ -66,8 +76,11 @@ down={
 2d_physics/layer_3="Player"
 2d_physics/layer_4="Ghost"
 2d_physics/layer_5="TorchLight"
-2d_physics/layer_6="Hurtbox"
-2d_physics/layer_7="Hitbox"
+2d_physics/layer_6="Ghost Hitbox"
+2d_physics/layer_7="Seeker Hitbox"
+2d_physics/layer_8="Seeker Hurtbox"
+2d_physics/layer_9="Ghost Hurtbox"
+2d_physics/layer_10="Scary Aura"
 
 [physics]
 

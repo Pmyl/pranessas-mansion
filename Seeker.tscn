@@ -1,10 +1,90 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Seeker.gd" type="Script" id=2]
 [ext_resource path="res://TorchLight.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Sprites/far_2.png" type="Texture" id=4]
+[ext_resource path="res://Sprites/far_1.png" type="Texture" id=5]
+[ext_resource path="res://Sprites/close_1.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/close_2.png" type="Texture" id=7]
+[ext_resource path="res://Sounds/mixkit-thin-metal-card-deck-shuffle-3175_new.wav" type="AudioStream" id=8]
+
+[sub_resource type="CapsuleShape2D" id=1]
+height = 6.0
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 100.0
+
+[sub_resource type="AtlasTexture" id=6]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 150, 150 )
+
+[sub_resource type="AtlasTexture" id=7]
+flags = 4
+atlas = ExtResource( 7 )
+region = Rect2( 0, 0, 150, 150 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 0, 0, 150, 150 )
+
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 150, 150 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ SubResource( 6 ), SubResource( 7 ) ],
+"loop": true,
+"name": "close",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 4 ), SubResource( 5 ) ],
+"loop": true,
+"name": "far",
+"speed": 3.0
+}, {
+"frames": [  ],
+"loop": true,
+"name": "none",
+"speed": 5.0
+} ]
 
 [node name="Seeker" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+speed = 60
+torch_on_walk_speed = 40
 
 [node name="TorchLight" parent="." index="1" instance=ExtResource( 3 )]
+
+[node name="Hurtbox" type="Area2D" parent="." index="4"]
+collision_layer = 128
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2( -1, -2 )
+shape = SubResource( 1 )
+
+[node name="GhostDetection" type="Area2D" parent="." index="5"]
+collision_layer = 0
+collision_mask = 512
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GhostDetection" index="0"]
+shape = SubResource( 2 )
+
+[node name="GhostDetectionSprite" type="AnimatedSprite" parent="." index="6"]
+scale = Vector2( 0.28, 0.306667 )
+frames = SubResource( 3 )
+animation = "none"
+
+[node name="GhostDetectionAudio" type="AudioStreamPlayer" parent="." index="7"]
+stream = ExtResource( 8 )
+volume_db = -12.581
+pitch_scale = 0.1
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_Hurtbox_area_entered"]
+[connection signal="area_entered" from="GhostDetection" to="." method="_on_GhostDetection_area_entered"]
+[connection signal="area_exited" from="GhostDetection" to="." method="_on_GhostDetection_area_exited"]

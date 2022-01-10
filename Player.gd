@@ -1,10 +1,12 @@
 extends KinematicBody2D
 
-var MOTION_SPEED = 90.0
+export var speed = 90
 var forced_motion = false
 var stop_motion = false
 var motion = Vector2()
 var last_direction = Vector2.DOWN
+
+onready var MOTION_SPEED = speed
 
 puppet var puppet_pos = Vector2()
 puppet var puppet_motion = Vector2()
@@ -29,6 +31,8 @@ func _physics_process(_delta):
 				newMotion += Vector2(0, -1)
 			if Input.is_action_pressed("down"):
 				newMotion += Vector2(0, 1)
+			
+			newMotion = newMotion.normalized()
 
 			if newMotion.length() != 0:
 				motion = newMotion
