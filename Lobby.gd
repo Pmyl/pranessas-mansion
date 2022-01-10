@@ -1,9 +1,17 @@
 extends Node
 
+signal player_registered(info)
+signal player_disconnected(info)
+signal connected_to_server()
+signal player_is_ghost(id)
+signal game_ready()
+signal game_finished()
 var my_info
+var ghost_id
+var player_info = {}
+var players_done = []
 
-func _ready():
-	randomize()
+func start():
 	# warning-ignore:return_value_discarded
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	# warning-ignore:return_value_discarded
@@ -15,9 +23,29 @@ func _ready():
 	# warning-ignore:return_value_discarded
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 	
-	my_info = { name = global.player_name }
+	var current_id = get_tree().get_network_unique_id()
+	my_info = { id = current_id, name = global.player_name, is_ghost = current_id == 1 }
+	player_info[current_id] = my_info
 
-var player_info = {}
+	emit_signal("player_registered", my_info)
+
+remotesync func set_ghost_id(id):
+	print("Now ghost is: ", id)
+	var ghost_id
+	
+	for pid in player_info:
+		if player_info[pid].is_ghost:
+			player_info[pid].is_ghost = false
+			ghost_id = pid
+
+	ghost_id = id
+	player_info[ghost_id].is_ghost = true
+	
+	emit_signal("player_is_ghost", id)
+
+remotesync func close_connection():
+	get_tree().network_peer = null
+	get_tree().change_scene("res://Main.tscn")
 
 func _player_connected(id):
 	print("player connected: sending my info (", my_info, ") to them (id: ", id, ")")
@@ -25,10 +53,12 @@ func _player_connected(id):
 
 func _player_disconnected(id):
 	print("disconnect player", id)
+	emit_signal("player_disconnected", player_info[id])
 	player_info.erase(id) # Erase player from info.
 
 func _connected_ok():
 	print("client: connected ok")
+	emit_signal("connected_to_server")
 
 func _server_disconnected():
 	print("client: server kicked us")
@@ -46,33 +76,37 @@ remote func register_player(info):
 	# Store the info
 	print("register player id:", id, " and info ", info)
 	player_info[id] = info
+	emit_signal("player_registered", info)
 
 	# Call function to update lobby UI here
 
 remotesync func pre_configure_game():
+	players_done = []
 	print("pre configure game")
 	get_tree().set_pause(true) # Pre-pause
 	var selfPeerID = get_tree().get_network_unique_id()
 
 	# Load world
 	var world = load("res://Game.tscn").instance()
+	world.connect("game_over", self, "game_over")
 	get_node("/root").add_child(world)
 
-	print("adding my player")
 	# Load my player
-	
-	create_player(selfPeerID, global.player_name, selfPeerID == 1)
+	# print("adding my player")
+	# create_player(selfPeerID, global.player_name, selfPeerID == 1)
 
-	print("adding other players - count ", player_info.size())
 	# Load other players
+	print("adding all players - count ", player_info.size())
 	for p in player_info:
-		create_player(p, player_info[p].name, p == 1)
+		create_player(p, player_info[p].name, player_info[p].is_ghost)
 
 	# Tell server (remember, server is always ID=1) that this peer is done pre-configuring.
 	# The server can call get_tree().get_rpc_sender_id() to find out who said they were done.
+	print("I'm done preconfiguring")
 	rpc_id(1, "done_preconfiguring")
 
 func create_player(id, name, is_ghost):
+	print("creating player ", id, " ", name, " ghost:", is_ghost)
 	var player
 	if is_ghost:
 		player = preload("res://Ghost.tscn").instance()
@@ -83,17 +117,13 @@ func create_player(id, name, is_ghost):
 	player.set_player_name(name)
 	get_node("/root/Game/Players").add_child(player)
 
-var players_done = []
 remotesync func done_preconfiguring():
-	print("done_preconfiguring")
 	var who = get_tree().get_rpc_sender_id()
+	print("Done preconfiguring message from ", who)
 	
-	if who == 1:
-		if player_info.size() == 0:
-			print("Starting solo game")
-			rpc("post_configure_game")
-		else:
-			pass
+	if who == 1 and player_info.size() == 0:
+		print("Starting solo game")
+		rpc("post_configure_game")
 	else:
 		# Here are some checks you can do, for example
 		assert(get_tree().is_network_server())
@@ -114,4 +144,8 @@ remotesync func post_configure_game():
 		
 		if 1 == get_tree().get_network_unique_id():
 			get_node("/root/Game").rpc("start_game")
-		# Game starts now!
+		emit_signal("game_ready")
+
+func game_over():
+	get_node("/root").get_node("Game").queue_free()
+	emit_signal("game_finished")

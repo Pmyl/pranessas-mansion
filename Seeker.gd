@@ -6,6 +6,9 @@ export var close_ghost_detection = 50
 export var detection_close_audio_pitch = 0.18
 export var detection_far_audio_pitch = 0.1
 
+signal on_death()
+signal on_revive()
+
 var ghost = null
 var ghost_distance = 0
 
@@ -43,6 +46,10 @@ remotesync func set_torch_rotation(angle):
 func _on_Hurtbox_area_entered(area):
 	if is_network_master():
 		print("Player ", name, ": DED")
+		rpc_id(1, "player_hit")
+
+remotesync func player_hit():
+	emit_signal("on_death")
 
 
 func _on_GhostDetection_area_entered(area):

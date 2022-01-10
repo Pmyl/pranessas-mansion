@@ -1,8 +1,68 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
+[ext_resource path="res://PlayerList.tscn" type="PackedScene" id=1]
 [ext_resource path="res://LobbyClient.gd" type="Script" id=2]
+[ext_resource path="res://Lobby.tscn" type="PackedScene" id=3]
 
-[node name="LobbyContainer" type="Node"]
-
-[node name="LobbyClient" type="Node" parent="."]
+[node name="LobbyContainer" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Lobby" parent="." instance=ExtResource( 3 )]
+
+[node name="PlayersContainer" type="VBoxContainer" parent="."]
+margin_left = 40.0
+margin_top = 47.0
+margin_right = 261.0
+margin_bottom = 304.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="PlayersContainer"]
+margin_right = 221.0
+margin_bottom = 14.0
+text = "PLAYERS"
+
+[node name="PlayerList" parent="PlayersContainer" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 18.0
+margin_right = 221.0
+margin_bottom = 18.0
+
+[node name="AttemptingConnection" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -140.5
+margin_top = -66.5
+margin_right = 140.5
+margin_bottom = 66.5
+text = "ATTEMPTING CONNECTION..."
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Cancel" type="Button" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -92.0
+margin_top = -50.0
+margin_right = -42.0
+margin_bottom = -30.0
+text = "CANCEL"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="Cancel" to="." method="_on_Cancel_pressed"]

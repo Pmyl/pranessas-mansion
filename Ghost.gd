@@ -16,6 +16,7 @@ export var health_down_pitch_rate = 0.05
 export var health_down_max_pitch = 2.4
 
 signal health_change(health)
+signal on_death()
 
 onready var last_walking_health = health
 
@@ -108,6 +109,9 @@ remotesync func update_health(new_health):
 		initial_health_down_pitch + (last_walking_health - new_health) * health_down_pitch_rate
 	)
 	$SoundHealthDown.play()
+	if health == 0:
+		print("Ghost: I'm dead!")
+		emit_signal("on_death")
 
 func keep_hit():
 	$HitRunTimer.start(5)
@@ -141,7 +145,7 @@ func _on_HitStunTimer_timeout():
 
 func _on_HitTimer_timeout():
 	if state in [GhostState.HitStun, GhostState.HitRun] and light_hits > 0:
-		rpc("update_health", health - light_hits)
+		rpc("update_health", max(0, health - light_hits))
 
 func _on_Hurtbox_area_entered(_area):
 	if is_network_master():

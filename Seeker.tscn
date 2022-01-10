@@ -59,6 +59,7 @@ speed = 60
 torch_on_walk_speed = 40
 
 [node name="TorchLight" parent="." index="1" instance=ExtResource( 3 )]
+consume = 3
 
 [node name="Hurtbox" type="Area2D" parent="." index="4"]
 collision_layer = 128

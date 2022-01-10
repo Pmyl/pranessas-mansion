@@ -658,16 +658,16 @@ script = ExtResource( 1 )
 position = Vector2( 497, 163 )
 
 [node name="Seeker1Position" type="Position2D" parent="."]
-position = Vector2( 114, 49 )
+position = Vector2( 448, 134 )
 
 [node name="Seeker2Position" type="Position2D" parent="."]
-position = Vector2( 848, 49 )
+position = Vector2( 547, 140 )
 
 [node name="Seeker3Position" type="Position2D" parent="."]
-position = Vector2( 113, 433 )
+position = Vector2( 451, 181 )
 
 [node name="Seeker4Position" type="Position2D" parent="."]
-position = Vector2( 848, 432 )
+position = Vector2( 548, 178 )
 
 [node name="Floor" type="TileMap" parent="."]
 tile_set = SubResource( 68 )
