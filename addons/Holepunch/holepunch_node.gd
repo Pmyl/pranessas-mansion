@@ -53,11 +53,22 @@ const SERVER_INFO = "peers"
 
 const MAX_PLAYER_COUNT = 2
 
+enum State {
+	One,
+	Two,
+	Three,
+	Four,
+	Five
+}
+
+var current_state
+
 # warning-ignore:unused_argument
 func _process(delta):
 	if peer_udp.get_available_packet_count() > 0:
 		var array_bytes = peer_udp.get_packet()
 		var packet_string = array_bytes.get_string_from_ascii()
+		print("received ", packet_string)
 		if not recieved_peer_greet:
 			if packet_string.begins_with(PEER_GREET):
 				var m = packet_string.split(":")
@@ -76,10 +87,11 @@ func _process(delta):
 	if server_udp.get_available_packet_count() > 0:
 		var array_bytes = server_udp.get_packet()
 		var packet_string = array_bytes.get_string_from_ascii()
+		print("received ", packet_string)
 		if packet_string.begins_with(SERVER_OK):
 			var m = packet_string.split(":")
-			print("my port is: ", own_port)
 			own_port = int( m[1] )
+			print("my port is: ", own_port)
 			emit_signal('session_registered')
 			if is_host:
 				if !found_server:
@@ -100,7 +112,7 @@ func _process(delta):
 func _handle_greet_message(peer_name, peer_port, my_port):
 	print("_handle_greet_message")
 	if own_port != my_port:
-		print("my port is: ", own_port)
+		print("my port is: ", my_port)
 		own_port = my_port
 		peer_udp.close()
 		peer_udp.listen(own_port, "*")
@@ -136,18 +148,26 @@ func _cascade_peer(add, peer_port):
 		peer_udp.set_dest_address(add, i)
 		var buffer = PoolByteArray()
 		buffer.append_array(("greet:"+client_name+":"+str(own_port)+":"+str(i)).to_utf8())
+		print("send ", buffer.get_string_from_utf8())
 		peer_udp.put_packet(buffer)
 		ports_tried += 1
 
+func _print_on_state(state, text):
+	if current_state != state:
+		print(text)
+	current_state = state
+	
 
 func _ping_peer():
 	
 	if not recieved_peer_confirm and greets_sent < response_window:
-		print("not recieved_peer_confirm and greets_sent < response_window")
+		_print_on_state(State.One, "not recieved_peer_confirm and greets_sent < response_window")
+
 		for p in peer.keys():
 			peer_udp.set_dest_address(peer[p].address, int(peer[p].port))
 			var buffer = PoolByteArray()
 			buffer.append_array(("greet:"+client_name+":"+str(own_port)+":"+peer[p].port).to_utf8())
+			print("send ", buffer.get_string_from_utf8())
 			peer_udp.put_packet(buffer)
 			greets_sent+=1
 			if greets_sent == response_window:
@@ -155,25 +175,27 @@ func _ping_peer():
 				#if the other player hasn't responded we should try more ports
 
 	if not recieved_peer_confirm and greets_sent == response_window:
-		print("not recieved_peer_confirm and greets_sent == response_window")
+		_print_on_state(State.Two, "not recieved_peer_confirm and greets_sent == response_window")
 		for p in peer.keys():
 			_cascade_peer(peer[p].address, int(peer[p].port))
 		greets_sent += 1
 
 	if recieved_peer_greet and not recieved_peer_go:
-		print("recieved_peer_greet and not recieved_peer_go")
+		_print_on_state(State.Three, "recieved_peer_greet and not recieved_peer_go")
 		for p in peer.keys():
 			peer_udp.set_dest_address(peer[p].address, int(peer[p].port))
 			var buffer = PoolByteArray()
 			buffer.append_array(("confirm:"+str(own_port)+":"+client_name+":"+str(is_host)+":"+peer[p].port).to_utf8())
+			print("send ", buffer.get_string_from_utf8())
 			peer_udp.put_packet(buffer)
 
 	if  recieved_peer_confirm:
-		print("recieved_peer_confirm")
+		_print_on_state(State.Four, "recieved_peer_confirm")
 		for p in peer.keys():
 			peer_udp.set_dest_address(peer[p].address, int(peer[p].port))
 			var buffer = PoolByteArray()
 			buffer.append_array(("go:"+client_name).to_utf8())
+			print("send ", buffer.get_string_from_utf8())
 			peer_udp.put_packet(buffer)
 		gos_sent += 1
 
@@ -186,6 +208,7 @@ func _ping_peer():
 func start_peer_contact():	
 	print("start_peer_contact")
 	server_udp.put_packet("goodbye".to_utf8())
+	print("send goodbye")
 	server_udp.close()
 	if peer_udp.is_listening():
 		peer_udp.close()
@@ -200,6 +223,7 @@ func finalize_peers(id):
 	print("finalize_peers")
 	var buffer = PoolByteArray()
 	buffer.append_array((EXCHANGE_PEERS+str(id)).to_utf8())
+	print("send ", buffer.get_string_from_utf8())
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)
 
@@ -209,6 +233,7 @@ func checkout():
 	print("checkout")
 	var buffer = PoolByteArray()
 	buffer.append_array((CHECKOUT_CLIENT+client_name).to_utf8())
+	print("send ", buffer.get_string_from_utf8())
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)
 
@@ -240,6 +265,7 @@ func start_traversal(id, is_player_host, player_name):
 	if (is_host):
 		var buffer = PoolByteArray()
 		buffer.append_array((REGISTER_SESSION+session_id+":"+str(MAX_PLAYER_COUNT)).to_utf8())
+		print("send ", buffer.get_string_from_utf8())
 		server_udp.close()
 		server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 		server_udp.put_packet(buffer)
@@ -253,6 +279,7 @@ func _send_client_to_server():
 	yield(get_tree().create_timer(2.0), "timeout")
 	var buffer = PoolByteArray()
 	buffer.append_array((REGISTER_CLIENT+client_name+":"+session_id).to_utf8())
+	print("send ", buffer.get_string_from_utf8())
 	server_udp.close()
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)
