@@ -43,7 +43,7 @@ remotesync func set_torch_rotation(angle):
 	$TorchLight.call_deferred("set_rotation", angle)
 
 
-func _on_Hurtbox_area_entered(area):
+func _on_Hurtbox_area_entered(_area):
 	if is_network_master():
 		print("Player ", name, ": DED")
 		rpc_id(1, "player_hit")
@@ -60,7 +60,7 @@ func _on_GhostDetection_area_entered(area):
 		ghost = area
 
 
-func _on_GhostDetection_area_exited(area):
+func _on_GhostDetection_area_exited(_area):
 	if is_network_master():
 		ghost = null
 		$GhostDetectionSprite.play("none")

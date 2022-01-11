@@ -4,13 +4,18 @@ func _ready():
 	$PlayersContainer/PlayerList.set_server_mode()
 
 	var peer = NetworkedMultiplayerENet.new()
-	peer.create_server(4444, 3)
+	peer.create_server(global.own_port, 3)
 	get_tree().network_peer = peer
 	
+	# warning-ignore:return_value_discarded
 	$Lobby.connect("player_registered", self, "add_player_name")
+	# warning-ignore:return_value_discarded
 	$Lobby.connect("player_disconnected", self, "remove_player_name")
+	# warning-ignore:return_value_discarded
 	$Lobby.connect("player_is_ghost", self, "display_ghost_player")
+	# warning-ignore:return_value_discarded
 	$Lobby.connect("game_ready", self, "hide_lobby")
+	# warning-ignore:return_value_discarded
 	$Lobby.connect("game_finished", self, "show_lobby")
 	$Lobby.start()
 	

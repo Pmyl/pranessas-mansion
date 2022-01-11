@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Test 2d"
-run/main_scene="res://Main.tscn"
+run/main_scene="res://HolePunchMain.tscn"
 config/icon="res://icon.png"
 
 [autoload]

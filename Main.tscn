@@ -15,14 +15,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Server IP" type="TextEdit" parent="."]
+[node name="Server IP" type="LineEdit" parent="."]
 margin_left = 439.5
 margin_top = 334.0
 margin_right = 584.5
 margin_bottom = 354.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Server" type="Button" parent="."]
 margin_left = 439.5
@@ -44,7 +41,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Player name" type="TextEdit" parent="."]
+[node name="Player name" type="LineEdit" parent="."]
 margin_left = 385.0
 margin_top = 464.0
 margin_right = 642.0

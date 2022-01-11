@@ -151,6 +151,6 @@ func _on_Hurtbox_area_entered(_area):
 	if is_network_master():
 		lighted()
 
-func _on_Hurtbox_area_exited(area):
+func _on_Hurtbox_area_exited(_area):
 	if is_network_master():
 		unlighted()

@@ -31,7 +31,6 @@ func start():
 
 remotesync func set_ghost_id(id):
 	print("Now ghost is: ", id)
-	var ghost_id
 	
 	for pid in player_info:
 		if player_info[pid].is_ghost:
@@ -45,6 +44,7 @@ remotesync func set_ghost_id(id):
 
 remotesync func close_connection():
 	get_tree().network_peer = null
+# warning-ignore:return_value_discarded
 	get_tree().change_scene("res://Main.tscn")
 
 func _player_connected(id):
@@ -84,7 +84,7 @@ remotesync func pre_configure_game():
 	players_done = []
 	print("pre configure game")
 	get_tree().set_pause(true) # Pre-pause
-	var selfPeerID = get_tree().get_network_unique_id()
+	# var selfPeerID = get_tree().get_network_unique_id()
 
 	# Load world
 	var world = load("res://Game.tscn").instance()
