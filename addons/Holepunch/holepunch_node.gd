@@ -18,7 +18,7 @@ export(int) var rendevouz_port = 4000
 #This is the range of ports you will search if you hear no response from the first port tried
 export(int) var port_cascade_range = 10
 #The amount of messages of the same type you will send before cascading or giving up
-export(int) var response_window = 5
+export(int) var response_window = 50
 
 
 var found_server = false
@@ -144,13 +144,15 @@ func _handle_go_message(peer_name):
 
 func _cascade_peer(add, peer_port):
 	print("_cascade_peer")
+	var ports = []
 	for i in range(peer_port - port_cascade_range, peer_port + port_cascade_range):
 		peer_udp.set_dest_address(add, i)
 		var buffer = PoolByteArray()
 		buffer.append_array(("greet:"+client_name+":"+str(own_port)+":"+str(i)).to_utf8())
-		print("send ", buffer.get_string_from_utf8())
+		ports.append(i)
 		peer_udp.put_packet(buffer)
 		ports_tried += 1
+	print("sent greet to:", str(ports))
 
 func _print_on_state(state, text):
 	if current_state != state:
@@ -195,11 +197,14 @@ func _ping_peer():
 			peer_udp.set_dest_address(peer[p].address, int(peer[p].port))
 			var buffer = PoolByteArray()
 			buffer.append_array(("go:"+client_name).to_utf8())
-			print("send ", buffer.get_string_from_utf8())
+			print("send ", buffer.get_string_from_utf8(), " (sent to ", peer[p].address, ":", peer[p].port, ")")
 			peer_udp.put_packet(buffer)
 		gos_sent += 1
+		
+		print("gos sent: ", gos_sent)
 
 		if gos_sent >= response_window: #the other player has confirmed and is probably waiting
+			print("hole punched own_port:", own_port, " host_port:", host_port)
 			emit_signal("hole_punched", int(own_port), int(host_port), host_address)
 			p_timer.stop()
 			set_process(false)
@@ -293,4 +298,4 @@ func _ready():
 	p_timer = Timer.new()
 	get_node("/root/").call_deferred("add_child", p_timer)
 	p_timer.connect("timeout", self, "_ping_peer")
-	p_timer.wait_time = 0.1
+	p_timer.wait_time = 0.2

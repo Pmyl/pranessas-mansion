@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Test 2d"
-run/main_scene="res://HolePunchMain.tscn"
+run/main_scene="res://main_webrtc.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -35,7 +35,8 @@ window/stretch/aspect="keep"
 
 [gdnative]
 
-singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
+singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib", "res://webrtc/webrtc.tres" ]
+singletons_disabled=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
 
 [global]
 

@@ -11,4 +11,4 @@ var client_name  = ""
 
 func _ready():
 	randomize()
-	client_name = "change_me" + str(randi())
+	client_name = "fisso" + str(randi())
