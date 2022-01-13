@@ -76,7 +76,8 @@ func _on_Peers_pressed():
 
 func start():
 	# replaced $VBoxContainer/Connect/Host.text with ws://54.147.40.190:9080
-	client.start("ws://54.147.40.190:9080", $VBoxContainer/Connect/RoomSecret.text)
+	var host = $VBoxContainer/Connect/Host.text if $VBoxContainer/Connect/Host.text != "" else "wss://ec2-54-147-40-190.compute-1.amazonaws.com:9080"
+	client.start(host, $VBoxContainer/Connect/RoomSecret.text)
 
 
 func _on_Seal_pressed():
