@@ -35,7 +35,7 @@ window/stretch/aspect="keep"
 
 [gdnative]
 
-singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib", "res://webrtc/webrtc.tres" ]
+singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
 singletons_disabled=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
 
 [global]
