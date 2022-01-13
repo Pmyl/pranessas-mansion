@@ -26,10 +26,13 @@ func _init():
 
 
 func connect_to_url(url):
+	print("attempting connection to ", url)
 	close()
 	code = 1000
 	reason = "Unknown"
-	client.connect_to_url(url)
+	var error = client.connect_to_url(url)
+	if error != null:
+		print(error)
 
 
 func close():

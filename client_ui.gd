@@ -75,7 +75,8 @@ func _on_Peers_pressed():
 
 
 func start():
-	client.start($VBoxContainer/Connect/Host.text, $VBoxContainer/Connect/RoomSecret.text)
+	# replaced $VBoxContainer/Connect/Host.text with ws://54.147.40.190:9080
+	client.start("ws://54.147.40.190:9080", $VBoxContainer/Connect/RoomSecret.text)
 
 
 func _on_Seal_pressed():
