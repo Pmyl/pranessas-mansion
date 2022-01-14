@@ -9,6 +9,8 @@ var player_name = "Incognito"
 
 var webrtc_url = "wss://pran-webrtc-lobby.herokuapp.com"
 
+var game_time = 300
+
 var client_name  = ""
 
 func _ready():

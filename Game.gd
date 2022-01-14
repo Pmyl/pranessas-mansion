@@ -36,11 +36,20 @@ remotesync func start_game():
 		if "ghosts" in p.get_groups():
 			$GhostHealth.set_ghost(p)
 
+
 remotesync func seekers_win():
-	emit_signal("game_over")
+	var players = get_node("Players").get_children()
+	for p in players:
+		if not "ghosts" in p.get_groups():
+			p.declared_winner()
+	$VictoryDuration.start(8)
 
 remotesync func ghost_win():
-	emit_signal("game_over")
+	var players = get_node("Players").get_children()
+	for p in players:
+		if "ghosts" in p.get_groups():
+			p.declared_winner()
+	$VictoryDuration.start(8)
 
 func trigger_seekers_win():
 	rpc("seekers_win")
@@ -48,9 +57,17 @@ func trigger_seekers_win():
 func check_ghost_win():
 	dead_seekers += 1
 	var seekers = get_node("Players").get_children().size() - 1
-	print("Check ghost win - Dead seekers: ", dead_seekers, " Current seekers: ", seekers)
+	print("Check ghost win - Dead seekers: ", dead_seekers, " Total seekers: ", seekers)
 	if dead_seekers == seekers:
 		rpc("ghost_win")
 
 func revived():
 	dead_seekers -= 1
+
+
+func _on_Countdown_on_timeout():
+	trigger_seekers_win()
+
+
+func _on_VictoryDuration_timeout():
+	emit_signal("game_over")

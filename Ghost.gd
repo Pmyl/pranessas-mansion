@@ -154,3 +154,7 @@ func _on_Hurtbox_area_entered(_area):
 func _on_Hurtbox_area_exited(_area):
 	if is_network_master():
 		unlighted()
+
+
+func declared_winner():
+	$AnimatedSprite.play("GhostVictory")

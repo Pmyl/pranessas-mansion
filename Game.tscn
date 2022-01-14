@@ -1,8 +1,9 @@
-[gd_scene load_steps=72 format=2]
+[gd_scene load_steps=73 format=2]
 
 [ext_resource path="res://Game.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/tilesetHouse.png" type="Texture" id=2]
 [ext_resource path="res://GhostHealth.gd" type="Script" id=3]
+[ext_resource path="res://Countdown.tscn" type="PackedScene" id=4]
 
 [sub_resource type="TileSet" id=68]
 0/name = "tilesetHouse.png 0"
@@ -655,19 +656,19 @@ script = ExtResource( 1 )
 [node name="Players" type="Node" parent="."]
 
 [node name="GhostPosition" type="Position2D" parent="."]
-position = Vector2( 497, 163 )
+position = Vector2( 498, 155 )
 
 [node name="Seeker1Position" type="Position2D" parent="."]
-position = Vector2( 448, 134 )
+position = Vector2( 111, 47 )
 
 [node name="Seeker2Position" type="Position2D" parent="."]
-position = Vector2( 547, 140 )
+position = Vector2( 845, 47 )
 
 [node name="Seeker3Position" type="Position2D" parent="."]
-position = Vector2( 451, 181 )
+position = Vector2( 112, 431 )
 
 [node name="Seeker4Position" type="Position2D" parent="."]
-position = Vector2( 548, 178 )
+position = Vector2( 848, 431 )
 
 [node name="Floor" type="TileMap" parent="."]
 tile_set = SubResource( 68 )
@@ -701,3 +702,15 @@ script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Countdown" parent="." instance=ExtResource( 4 )]
+margin_left = 497.0
+margin_top = -29.0
+margin_right = 497.0
+margin_bottom = -29.0
+
+[node name="VictoryDuration" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="on_timeout" from="Countdown" to="." method="_on_Countdown_on_timeout"]
+[connection signal="timeout" from="VictoryDuration" to="." method="_on_VictoryDuration_timeout"]

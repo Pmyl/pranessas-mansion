@@ -65,3 +65,6 @@ func _on_GhostDetection_area_exited(_area):
 		ghost = null
 		$GhostDetectionSprite.play("none")
 		$GhostDetectionAudio.stop()
+
+func declared_winner():
+	$AnimatedSprite.play("SeekerVictory")

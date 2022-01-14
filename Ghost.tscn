@@ -24,7 +24,6 @@ visible = false
 [node name="AnimatedSprite" parent="." index="1"]
 position = Vector2( 0, -2 )
 scale = Vector2( 0.201797, 0.222344 )
-frame = 4
 
 [node name="Label" parent="." index="2"]
 visible = false
