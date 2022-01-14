@@ -6,4 +6,4 @@ bin/
 build/
 lib/
 
-!webrtc/lib
+.idea/

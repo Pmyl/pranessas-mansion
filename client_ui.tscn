@@ -28,30 +28,16 @@ __meta__ = {
 margin_right = 1024.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="VBoxContainer/Connect"]
-margin_top = 5.0
-margin_right = 73.0
-margin_bottom = 19.0
-text = "Connect to:"
-
-[node name="Host" type="LineEdit" parent="VBoxContainer/Connect"]
-margin_left = 77.0
-margin_right = 921.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "ws://localhost:9080"
-
 [node name="Room" type="Label" parent="VBoxContainer/Connect"]
-margin_left = 925.0
-margin_right = 962.0
+margin_right = 37.0
 margin_bottom = 24.0
 size_flags_vertical = 5
 text = "Room"
 valign = 1
 
 [node name="RoomSecret" type="LineEdit" parent="VBoxContainer/Connect"]
-margin_left = 966.0
-margin_right = 1024.0
+margin_left = 41.0
+margin_right = 99.0
 margin_bottom = 24.0
 placeholder_text = "secret"
 

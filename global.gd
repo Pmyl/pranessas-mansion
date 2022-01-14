@@ -7,6 +7,8 @@ var host_address = "localhost"
 var server_ip_to_connect_to = "localhost"
 var player_name = "Incognito"
 
+var webrtc_url = "wss://pran-webrtc-lobby.herokuapp.com"
+
 var client_name  = ""
 
 func _ready():
