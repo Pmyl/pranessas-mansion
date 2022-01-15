@@ -4,7 +4,9 @@ enum GhostState {
 	Walk,
 	Run,
 	HitStun
-	HitRun
+	HitRun,
+	Won,
+	Lost
 }
 
 export var run_speed = 160
@@ -23,6 +25,7 @@ onready var last_walking_health = health
 var is_running = false
 var state = GhostState.Walk
 var light_hits = 0
+var game_ended = false
 
 func _ready():
 	set_walk()
@@ -77,6 +80,23 @@ func _physics_process(_delta):
 			$ScaryAura/CollisionShape2D.disabled = true
 			$AnimatedSprite.visible = true
 			$AnimatedSprite.modulate.a = 1
+		
+		GhostState.Won:
+			stop_motion = true
+			$AnimatedSprite.visible = true
+			$AnimatedSprite.modulate.a = 1
+			$AnimatedSprite.play("GhostVictory")
+			$Hitbox/CollisionShape2D.disabled = true
+			$Hurtbox/CollisionShape2D.disabled = true
+			$ScaryAura/CollisionShape2D.disabled = true
+		
+		GhostState.Lost:
+			stop_motion = true
+			$AnimatedSprite.visible = true
+			$AnimatedSprite.modulate.a = 1
+			$Hitbox/CollisionShape2D.disabled = true
+			$Hurtbox/CollisionShape2D.disabled = true
+			$ScaryAura/CollisionShape2D.disabled = true
 
 remotesync func start_running():
 	print("Ghost: RUUUUUUN")
@@ -122,7 +142,7 @@ func lighted():
 	match state:
 		GhostState.HitRun:
 			keep_hit()
-		GhostState.HitStun:
+		GhostState.HitStun, GhostState.Won, GhostState.Lost:
 			pass
 		_:
 			rpc("hit_stun")
@@ -136,7 +156,7 @@ func unlighted():
 		rpc("set_walk")
 
 func _on_HitRunTimer_timeout():
-	if light_hits == 0:
+	if light_hits == 0 and state == GhostState.HitRun:
 		rpc("set_walk")
 
 func _on_HitStunTimer_timeout():
@@ -157,4 +177,8 @@ func _on_Hurtbox_area_exited(_area):
 
 
 func declared_winner():
-	$AnimatedSprite.play("GhostVictory")
+	state = GhostState.Won
+
+
+func declared_loser():
+	state = GhostState.Lost

@@ -11,12 +11,14 @@ signal on_revive()
 
 var ghost = null
 var ghost_distance = 0
+var dead = false
+var game_ended = false
 
 func _ready():
 	$GhostDetection/CollisionShape2D.shape.radius = min_ghost_detection
 
 func _physics_process(_delta):
-	if is_network_master():
+	if is_network_master() and not dead and not game_ended:
 		var angle = position.angle_to_point(get_global_mouse_position())
 		rpc("set_torch_rotation", angle)
 		
@@ -44,16 +46,18 @@ remotesync func set_torch_rotation(angle):
 
 
 func _on_Hurtbox_area_entered(_area):
-	if is_network_master():
+	if is_network_master() and not game_ended:
 		print("Player ", name, ": DED")
 		rpc_id(1, "player_hit")
 
 remotesync func player_hit():
-	emit_signal("on_death")
+	if not game_ended:
+		dead = true
+		emit_signal("on_death")
 
 
 func _on_GhostDetection_area_entered(area):
-	if is_network_master():
+	if is_network_master() and not game_ended:
 		if not $GhostDetectionAudio.playing:
 			$GhostDetectionAudio.pitch_scale = detection_far_audio_pitch
 			$GhostDetectionAudio.play()
@@ -61,10 +65,19 @@ func _on_GhostDetection_area_entered(area):
 
 
 func _on_GhostDetection_area_exited(_area):
-	if is_network_master():
+	if is_network_master() and not game_ended:
 		ghost = null
 		$GhostDetectionSprite.play("none")
 		$GhostDetectionAudio.stop()
 
 func declared_winner():
 	$AnimatedSprite.play("SeekerVictory")
+	stop_motion = true
+	game_ended = true
+
+func declared_loser():
+	stop_motion = true
+	game_ended = true
+
+remotesync func add_battery_charge():
+	$TorchLight.refill()

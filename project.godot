@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Test 2d"
-run/main_scene="res://main_webrtc.tscn"
+run/main_scene="res://Intro.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -82,6 +82,7 @@ click={
 2d_physics/layer_8="Seeker Hurtbox"
 2d_physics/layer_9="Ghost Hurtbox"
 2d_physics/layer_10="Scary Aura"
+2d_physics/layer_11="Seeker Pickups"
 
 [physics]
 

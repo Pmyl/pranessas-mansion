@@ -24,19 +24,12 @@ visible = false
 [node name="AnimatedSprite" parent="." index="1"]
 position = Vector2( 0, -2 )
 scale = Vector2( 0.201797, 0.222344 )
+frame = 5
 
 [node name="Label" parent="." index="2"]
 visible = false
 
-[node name="HitRunTimer" type="Timer" parent="." index="3"]
-one_shot = true
-
-[node name="HitStunTimer" type="Timer" parent="." index="4"]
-one_shot = true
-
-[node name="HitTimer" type="Timer" parent="." index="5"]
-
-[node name="Health" type="Label" parent="." index="6"]
+[node name="Health" type="Label" parent="." index="3"]
 margin_left = -20.0
 margin_top = -34.0
 margin_right = 20.0
@@ -44,6 +37,14 @@ margin_bottom = -20.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="HitRunTimer" type="Timer" parent="." index="4"]
+one_shot = true
+
+[node name="HitStunTimer" type="Timer" parent="." index="5"]
+one_shot = true
+
+[node name="HitTimer" type="Timer" parent="." index="6"]
 
 [node name="Hurtbox" type="Area2D" parent="." index="7"]
 collision_layer = 256
@@ -63,18 +64,18 @@ visible = false
 position = Vector2( 0, -1 )
 shape = SubResource( 2 )
 
-[node name="SoundHealthDown" type="AudioStreamPlayer" parent="." index="9"]
-stream = ExtResource( 3 )
-volume_db = -10.065
-pitch_scale = 1.53
-
-[node name="ScaryAura" type="Area2D" parent="." index="10"]
+[node name="ScaryAura" type="Area2D" parent="." index="9"]
 collision_layer = 512
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ScaryAura" index="0"]
 visible = false
 shape = SubResource( 3 )
+
+[node name="SoundHealthDown" type="AudioStreamPlayer" parent="." index="10"]
+stream = ExtResource( 3 )
+volume_db = -10.065
+pitch_scale = 1.53
 
 [connection signal="timeout" from="HitRunTimer" to="." method="_on_HitRunTimer_timeout"]
 [connection signal="timeout" from="HitStunTimer" to="." method="_on_HitStunTimer_timeout"]

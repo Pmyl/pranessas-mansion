@@ -46,3 +46,7 @@ func _physics_process(delta):
 func toggle():
 	is_on = !is_on
 	rset("puppet_is_on", is_on)
+
+
+func refill():
+	charge = max_charge

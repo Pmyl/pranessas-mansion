@@ -19,4 +19,3 @@ func _on_LinkButton_pressed():
 func _on_ClientUI_lobby_sealed(player_info):
 	$VBoxContainer.visible = false
 	$GameLoader.run(player_info)
-	pass # Replace with function body.

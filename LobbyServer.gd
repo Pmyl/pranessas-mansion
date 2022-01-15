@@ -3,8 +3,9 @@ extends Control
 func _ready():
 	$PlayersContainer/PlayerList.set_server_mode()
 
+	print("starting a server on port %s" % global.host_port)
 	var peer = NetworkedMultiplayerENet.new()
-	peer.create_server(global.own_port, 3)
+	peer.create_server(global.host_port, 3)
 	get_tree().network_peer = peer
 	
 	# warning-ignore:return_value_discarded
