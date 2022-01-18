@@ -6,8 +6,7 @@ var next_battery_to_spawn = 0
 var battery_positions = []
 
 func _ready():
-	var selfPeerID = get_tree().get_network_unique_id()
-	if selfPeerID == 1:
+	if global.is_host:
 		seeker_positions.append($PlayersPositions/Seeker1Position.position)
 		seeker_positions.append($PlayersPositions/Seeker2Position.position)
 		seeker_positions.append($PlayersPositions/Seeker3Position.position)
@@ -24,12 +23,12 @@ func _ready():
 
 var dead_seekers = 0
 
-remotesync func start_game():
+remotesync func start_game(is_playing_online = false):
 	print("Game started!")
-	var is_host = get_tree().get_network_unique_id() == 1
+	global.is_playing_online = is_playing_online
 	var players = get_node("Players").get_children()
 
-	if is_host:
+	if global.is_host:
 		for p in players:
 			var pos
 			if "ghosts" in p.get_groups():
@@ -40,14 +39,17 @@ remotesync func start_game():
 				p.connect("on_revive", self, "revived")
 				pos = seeker_positions.pop_front()
 			print("setting position of player ", p.name, " to: ", pos)
-			p.rpc("set_initial_position", pos)
+			if is_playing_online:
+				p.rpc("set_initial_position", pos)
+			else:
+				p.set_initial_position(pos)
 		$BatterySpawner.start(30)
 	
 	for p in players:
 		if "ghosts" in p.get_groups():
-			$GhostHealth.set_ghost(p)
+			$CanvasLayer/GhostHealth.set_ghost(p)
 	
-	$Countdown.start()
+	$CanvasLayer/Countdown.start()
 
 
 remotesync func seekers_win():
@@ -60,7 +62,7 @@ remotesync func seekers_win():
 			print("%s lost :(" % p.name)
 			p.declared_loser()
 	$VictoryDuration.start(8)
-	$Countdown.stop()
+	$CanvasLayer/Countdown.stop()
 	$BatterySpawner.stop()
 
 remotesync func ghost_win():
@@ -73,18 +75,22 @@ remotesync func ghost_win():
 			print("%s lost :(" % p.name)
 			p.declared_loser()
 	$VictoryDuration.start(8)
-	$Countdown.stop()
+	$CanvasLayer/Countdown.stop()
 	$BatterySpawner.stop()
 
 func trigger_seekers_win():
 	rpc("seekers_win")
 
-func check_ghost_win():
+func check_ghost_win(dead_seeker):
+	$GameCamera.zoom_to(dead_seeker)
 	dead_seekers += 1
 	var seekers = get_node("Players").get_children().size() - 1
 	print("Check ghost win - Dead seekers: ", dead_seekers, " Total seekers: ", seekers)
 	if dead_seekers == seekers:
-		rpc("ghost_win")
+		if global.is_playing_online:
+			rpc("ghost_win")
+		else:
+			ghost_win()
 
 func revived():
 	dead_seekers -= 1
@@ -101,7 +107,10 @@ func _on_VictoryDuration_timeout():
 func _on_BatterySpawner_timeout():
 	var battery_position = battery_positions[next_battery_to_spawn]
 	next_battery_to_spawn = (next_battery_to_spawn + 1) % battery_positions.size()
-	rpc("spawn_battery", battery_position)
+	if global.is_playing_online:
+		rpc("spawn_battery", battery_position)
+	else:
+		spawn_battery(battery_position)
 
 
 remotesync func spawn_battery(battery_position):

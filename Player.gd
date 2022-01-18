@@ -1,6 +1,8 @@
 extends KinematicBody2D
 
 export var speed = 90
+export var no_input := false
+
 var forced_motion = false
 var stop_motion = false
 var motion = Vector2()
@@ -13,7 +15,7 @@ puppet var puppet_motion = Vector2()
 
 
 func _physics_process(_delta):
-	if is_network_master():
+	if not global.is_playing_online or is_network_master():
 		if stop_motion:
 			motion = Vector2()
 		else:
@@ -22,32 +24,33 @@ func _physics_process(_delta):
 			else:
 				motion = Vector2()
 
-			var newMotion = Vector2()
-			if Input.is_action_pressed("left"):
-				newMotion += Vector2(-1, 0)
-			if Input.is_action_pressed("right"):
-				newMotion += Vector2(1, 0)
-			if Input.is_action_pressed("up"):
-				newMotion += Vector2(0, -1)
-			if Input.is_action_pressed("down"):
-				newMotion += Vector2(0, 1)
+			if not no_input:
+				var newMotion = Vector2()
+				if Input.is_action_pressed("left"):
+					newMotion += Vector2(-1, 0)
+				if Input.is_action_pressed("right"):
+					newMotion += Vector2(1, 0)
+				if Input.is_action_pressed("up"):
+					newMotion += Vector2(0, -1)
+				if Input.is_action_pressed("down"):
+					newMotion += Vector2(0, 1)
 			
-			newMotion = newMotion.normalized()
+				newMotion = newMotion.normalized()
 
-			if newMotion.length() != 0:
-				motion = newMotion
-				last_direction = motion
+				if newMotion.length() != 0:
+					motion = newMotion
+					last_direction = motion
 
-		rset("puppet_motion", motion)
-		rset("puppet_pos", position)
+		if global.is_playing_online:
+			rset("puppet_motion", motion)
+			rset("puppet_pos", position)
 	else:
 		position = puppet_pos
 		motion = puppet_motion
 
-	# FIXME: Use move_and_slide
 	motion = move_and_slide(motion * MOTION_SPEED)
-	if not is_network_master():
-		puppet_pos = position # To avoid jitter
+	if global.is_playing_online and not is_network_master():
+		puppet_pos = position
 
 
 func set_player_name(new_name):
@@ -55,9 +58,10 @@ func set_player_name(new_name):
 
 
 remotesync func set_initial_position(pos):
-	if is_network_master():
+	if not global.is_playing_online or is_network_master():
 		position = pos
-		rset("puppet_pos", position)
+		if global.is_playing_online:
+			rset("puppet_pos", position)
 
 
 func _ready():

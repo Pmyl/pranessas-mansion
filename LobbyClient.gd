@@ -1,6 +1,7 @@
 extends Control
 
 func _ready():
+	global.is_host = false
 	print("attempting connection to: %s on port %s with my port %s" % [global.host_address, int(global.host_port), int(global.own_port)])
 	var peer = NetworkedMultiplayerENet.new()
 	var result = peer.create_client(str(global.host_address), int(global.host_port), 0, 0, int(global.own_port))

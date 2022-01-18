@@ -26,6 +26,7 @@ func _process(delta):
 func _connected(id):
 	player_info[id] = { id = id, name = str(id), is_ghost = id == 1 }
 	_log("Signaling server connected with ID: %d" % id)
+	global.is_host = id == 1
 
 
 func _disconnected():

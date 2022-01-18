@@ -143,7 +143,7 @@ remotesync func post_configure_game():
 		get_tree().set_pause(false)
 		
 		if 1 == get_tree().get_network_unique_id():
-			get_node("/root/Game").rpc("start_game")
+			get_node("/root/Game").rpc("start_game", true)
 		emit_signal("game_ready")
 
 func game_over():

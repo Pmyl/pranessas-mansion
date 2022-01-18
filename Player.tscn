@@ -47,6 +47,26 @@ flags = 4
 atlas = ExtResource( 1 )
 region = Rect2( 600, 200, 200, 200 )
 
+[sub_resource type="AtlasTexture" id=23]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 200, 200 )
+
+[sub_resource type="AtlasTexture" id=24]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 200, 0, 200, 200 )
+
+[sub_resource type="AtlasTexture" id=25]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 0, 400, 200, 200 )
+
+[sub_resource type="AtlasTexture" id=26]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 200, 400, 200, 200 )
+
 [sub_resource type="AtlasTexture" id=15]
 flags = 4
 atlas = ExtResource( 1 )
@@ -87,26 +107,6 @@ flags = 4
 atlas = ExtResource( 1 )
 region = Rect2( 0, 600, 200, 200 )
 
-[sub_resource type="AtlasTexture" id=23]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 200, 200 )
-
-[sub_resource type="AtlasTexture" id=24]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 200, 0, 200, 200 )
-
-[sub_resource type="AtlasTexture" id=25]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 0, 400, 200, 200 )
-
-[sub_resource type="AtlasTexture" id=26]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 200, 400, 200, 200 )
-
 [sub_resource type="SpriteFrames" id=6]
 animations = [ {
 "frames": [ SubResource( 7 ), SubResource( 8 ), SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ) ],
@@ -114,14 +114,14 @@ animations = [ {
 "name": "default",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ), SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ), SubResource( 22 ) ],
-"loop": true,
-"name": "GhostVictory",
-"speed": 3.0
-}, {
 "frames": [ SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ) ],
 "loop": true,
 "name": "SeekerVictory",
+"speed": 3.0
+}, {
+"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ), SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ), SubResource( 22 ) ],
+"loop": true,
+"name": "GhostVictory",
 "speed": 3.0
 } ]
 
@@ -137,6 +137,7 @@ shape = SubResource( 1 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.2, 0.2 )
 frames = SubResource( 6 )
+frame = 7
 
 [node name="Label" type="Label" parent="."]
 margin_left = -97.0

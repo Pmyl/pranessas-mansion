@@ -1,6 +1,7 @@
 extends Control
 
 func _ready():
+	global.is_host = true
 	$PlayersContainer/PlayerList.set_server_mode()
 
 	print("starting a server on port %s" % global.host_port)

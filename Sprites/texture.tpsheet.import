@@ -1,0 +1,15 @@
+[remap]
+
+importer="codeandweb.texturepacker_import_spritesheet"
+type="Resource"
+path="res://.import/texture.tpsheet-a9f93593d77ed8e095b16a1553a46ded.res"
+
+[deps]
+
+files=[ "res://Sprites/texture.sprites/Timeline 1_0001.tres", "res://Sprites/texture.sprites/Timeline 1_0004.tres", "res://Sprites/texture.sprites/Timeline 1_0007.tres", "res://Sprites/texture.sprites/Timeline 2_0001.tres", "res://Sprites/texture.sprites/Timeline 2_0003.tres", "res://Sprites/texture.sprites/Timeline 2_0005.tres", "res://Sprites/texture.sprites/Timeline 3_0001.tres", "res://Sprites/texture.sprites/Timeline 3_0002.tres", "res://Sprites/texture.sprites/Timeline 3_0004.tres", "res://Sprites/texture.sprites/Timeline 3_0006.tres" ]
+
+source_file="res://Sprites/texture.tpsheet"
+dest_files=[ "res://.import/texture.tpsheet-a9f93593d77ed8e095b16a1553a46ded.res", "res://Sprites/texture.sprites/Timeline 1_0001.tres", "res://Sprites/texture.sprites/Timeline 1_0004.tres", "res://Sprites/texture.sprites/Timeline 1_0007.tres", "res://Sprites/texture.sprites/Timeline 2_0001.tres", "res://Sprites/texture.sprites/Timeline 2_0003.tres", "res://Sprites/texture.sprites/Timeline 2_0005.tres", "res://Sprites/texture.sprites/Timeline 3_0001.tres", "res://Sprites/texture.sprites/Timeline 3_0002.tres", "res://Sprites/texture.sprites/Timeline 3_0004.tres", "res://Sprites/texture.sprites/Timeline 3_0006.tres" ]
+
+[params]
+
